@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>Mathzy | Tutoría Remedial IA</title>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+        <style>
+            :root { --primary-blue: #2c3e50; --accent-blue: #0056b3; --success-green: #1abc9c; --light-bg: #f4f7f6; }
+            body { background-color: var(--light-bg); font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
+            .container { background: white; width: 90%; max-width: 600px; margin-top: 40px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
+            .math-display { font-size: 65px; color: var(--accent-blue); margin: 30px 0; font-weight: bold; }
+            .input-res { width: 100%; padding: 15px; font-size: 24px; border: 2px solid var(--primary-blue); border-radius: 12px; text-align: center; margin-bottom: 20px; box-sizing: border-box; }
+            .btn-verify { background-color: var(--success-green); color: white; width: 100%; padding: 18px; font-size: 18px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; text-decoration: none; display: block; }
+            .ai-box { background-color: #fafafa; border: 1px solid #eee; border-radius: 12px; padding: 20px; text-align: left; margin-top: 20px; }
+        </style>
+        <script>
+            function leerExplicacion() {
+                const texto = document.getElementById('explicacionTexto').innerText;
+                const utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'es-MX';
+                window.speechSynthesis.speak(utterance);
+            }
+            function refreshMath(data) { if (data.status === "success") { MathJax.typesetPromise(); } }
+        </script>
+    </h:head>
+    <h:body>
+        <div class="container">
+            <h2 style="color: var(--primary-blue);">Mathzy | Tutoría Remedial IA</h2>
+            <h:form id="mainForm">
+                <h:panelGroup id="gamePanel">
+                    <div class="math-display">
+                        \( #{mathBean.operacionActual.numero1} + #{mathBean.operacionActual.numero2} = ? \)
+                    </div>
+                    <h:inputText value="#{mathBean.respuestaUsuario}" styleClass="input-res" p:placeholder="Resultado" />
+                    
+                    <div style="margin-bottom: 15px; font-weight: bold; color: #{mathBean.feedback.contains('Correcto') ? '#1abc9c' : '#e74c3c'};">
+                        <h:outputText value="#{mathBean.feedback}" />
+                    </div>
+
+                    <h:commandLink styleClass="btn-verify" action="#{mathBean.evaluar()}">
+                        <f:ajax execute="@form" render="gamePanel" onevent="refreshMath" />
+                        <i class="fas fa-check-circle"></i> Verificar Respuesta
+                    </h:commandLink>
+
+                    <h:commandLink value="Siguiente Ejercicio →" action="#{mathBean.nuevaPractica()}" 
+                                   style="display:block; margin-top:15px; color:#333; text-decoration:none;">
+                        <f:ajax render="gamePanel" onevent="refreshMath" />
+                    </h:commandLink>
+
+                    <div class="ai-box">
+                        <div style="display:flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight:bold; color:var(--primary-blue);">Explicación de la IA</span>
+                            <button type="button" onclick="leerExplicacion()" style="cursor:pointer; background:none; border:1px solid var(--accent-blue); color:var(--accent-blue); border-radius:5px; padding:5px 10px;">
+                                <i class="fas fa-volume-up"></i> Escuchar
+                            </button>
+                        </div>
+                        <div id="explicacionTexto" style="margin-top:10px; font-size:14px; color:#555;">
+                            <h:outputText value="#{mathBean.explicacionLatex}" escape="false" />
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </div>
+        <footer style="margin-top:20px; font-size:12px; color:#7f8c8d;">
+            Leslye Hernández Jiménez | Proyecto Mathzy Tutoría IA v1.0
+        </footer>
+    </h:body>
+</html>

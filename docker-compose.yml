@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: mathzy-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: mathzy_db
+    ports:
+      - "5432:5432"
+
+  python-agent:
+    build: ./mathzy-ai # Directorio donde estará el código de Python
+    container_name: python-agent
+    ports:
+      - "8000:8000"
+
+  glassfish:
+    image: payara/server-full:6.2023.1 # Compatible con Jakarta EE 10
+    container_name: glassfish-server
+    ports:
+      - "8080:8080"
+      - "4848:4848" # Consola de administración
+    depends_on:
+      - db

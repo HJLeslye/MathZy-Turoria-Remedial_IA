@@ -1,0 +1,9 @@
+com\lhj\mathzy\resources\JakartaEE10Resource.class
+com\mathzy\view\MathBean.class
+com\lhj\mathzy\JakartaRestConfiguration.class
+com\mathzy\view\MathBean$OperacionDTO.class
+com\mathzy\client\PythonAgentClient.class
+com\mathzy\model\OperacionSuma.class
+com\mathzy\model\OperationInterface.class
+com\mathzy\controller\MathResource.class
+com\mathzy\entity\Usuario.class
